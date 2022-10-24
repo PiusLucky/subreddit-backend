@@ -12,14 +12,10 @@ import User from "../../models/user.model.js";
 class Login {
   public invokeLogin = () => {
     return async (req: RequestWithValidatedBody, res: Response) => {
-      const { ip, device } = req.headers;
-      let token;
-
       try {
         const { email, password } = req.validatedBody;
         const role = UserRoles.Regular;
         const user = await User.findOne({ email, role });
-
         const isPasswordValid = await AuthService.comparePassword(
           password,
           user?.password
@@ -29,7 +25,7 @@ class Login {
           throw new UserError("Email or Password Invalid.");
         }
 
-        const token: string = AuthService.generateJwtToken(user.id);
+        const token: string = AuthService.generateJwtToken(user?._id);
         return loginSuccessResponse(
           res,
           "User logged in successfully!",

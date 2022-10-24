@@ -4,6 +4,11 @@ export interface RequestData extends Request {
   user?: any;
 }
 
+export interface RequestWithUserHeader extends RequestData {
+  user: any;
+  headers: any;
+}
+
 export interface ErrorResponse extends Error {
   response?: any;
 }

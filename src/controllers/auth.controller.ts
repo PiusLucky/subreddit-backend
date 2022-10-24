@@ -4,6 +4,8 @@ import Login from "./auth/login.js";
 import SignUp from "./auth/signup.js";
 import { ValidatorMiddlewareFactory } from "../middleware/validations/validator.middleware.js";
 import { LoginSchema, RegisterSchema } from "../schemas/auth.js";
+import Logout from "./auth/logout.js";
+import CheckAuth from "../middleware/checkauth.middleware.js";
 
 class AuthenticationController implements Controller {
   public path = "/auth";
@@ -20,9 +22,15 @@ class AuthenticationController implements Controller {
       new Login().invokeLogin()
     );
     this.router.post(
-      `${this.path}/signup`,
+      `${this.path}/register`,
       ValidatorMiddlewareFactory(RegisterSchema),
       new SignUp().invokeSignUp()
+    );
+
+    this.router.post(
+      `${this.path}/logout`,
+      new CheckAuth().initializeMiddleware(),
+      new Logout().invokeLogout()
     );
   }
 }

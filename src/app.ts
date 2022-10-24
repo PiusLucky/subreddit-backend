@@ -3,15 +3,13 @@ import * as dotenv from "dotenv";
 import helmet from "helmet";
 import { dirname } from "path";
 import Domains from "./config/allowed.domains.js";
-import express, { Request, Response, Application, NextFunction } from "express";
+import express, { Request, Response, Application } from "express";
 import Controller from "./interfaces/controller.interface.js";
 import morganMiddleware from "./config/morgan.js";
 import MongooseConnection from "./config/db.js";
 import envConfig from "../env.config.js";
 
 dotenv.config();
-
-export const api = express();
 
 class App {
   public app: Application;
@@ -22,6 +20,7 @@ class App {
   constructor({ controllers }: { controllers: Controller[] }) {
     this.domains = new Domains();
     this.app = express();
+    this.httpServer = this.app;
     this.port = Number(envConfig.PORT);
     this.connectToTheDatabase();
     this.initializeMiddlewares();
@@ -44,7 +43,7 @@ class App {
 
   private initializeControllers(controllers: Controller[]) {
     controllers.forEach((controller) => {
-      this.app.use("/api/v2/", controller.router);
+      this.app.use("/api/", controller.router);
     });
   }
 
@@ -52,9 +51,6 @@ class App {
     this.app.use(function (_req: Request, res: Response) {
       return res.status(404).json({ status: 404, message: "Not found" });
     });
-  }
-  nativeApp() {
-    return this.app;
   }
 }
 

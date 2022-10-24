@@ -1,4 +1,3 @@
-import { IUser } from "./../interfaces/user.interface.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { IRegister } from "../interfaces/user.interface.js";
@@ -6,6 +5,8 @@ import envConfig from "../../env.config.js";
 import MongooseConnection from "../config/db.js";
 import User from "../models/user.model.js";
 import { UserError } from "../utils/response/errors.js";
+import { UserRoles } from "../constant/enums/user/index.js";
+import DiscardedToken from "../models/discarded-token-model.js";
 
 export default class AuthService {
   async createUser(input: IRegister): Promise<any> {
@@ -14,21 +15,12 @@ export default class AuthService {
       await AuthService.checkUserInputForDuplicate(email, username);
       const hash = await AuthService.hashPassword(input.password);
       input.password = hash;
-      var refer = null;
-      if (ref) {
-        const checkRef = await User.findOne({
-          $or: [{ "referral.code": ref }, { "referral.user": ref }],
-        });
-        if (checkRef) {
-          refer = checkRef._id;
-        }
-      }
 
       let user: any = await User.create({
         email: email,
         password: hash,
         username: username,
-        role: "regular",
+        role: UserRoles.Regular,
       });
 
       return user;
@@ -92,5 +84,19 @@ export default class AuthService {
   async getUserById(userId: string): Promise<any> {
     const user = await User.findById(userId);
     return user;
+  }
+
+  async logout(userId: string, token: string): Promise<Boolean> {
+    await DiscardedToken.findOneAndUpdate(
+      { userId },
+      {
+        $push: {
+          blockedJwtTokens: token,
+        },
+      },
+      { upsert: true }
+    );
+
+    return true;
   }
 }

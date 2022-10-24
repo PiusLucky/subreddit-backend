@@ -7,6 +7,27 @@ import {
   ForbiddenError,
 } from "./errors.js";
 
+interface IResponseMeta {
+  statusCode: number;
+  message: string;
+  error: Boolean;
+  errorCode?: string;
+  token?: string;
+}
+
+export interface IPaginationResponse {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+interface IResponse {
+  meta: IResponseMeta;
+  data?: any;
+  pagination?: IPaginationResponse;
+}
+
 export const handleErrorResponse = (res: Response, error: any) => {
   let message: string, status: number;
   if (error instanceof UserError) {
@@ -45,6 +66,30 @@ export const loginSuccessResponse = (
     msg,
     user,
     token,
+  });
+};
+
+export const successResponse = (
+  res: Response,
+  statusCode: number,
+  message = "Success",
+  data?: any,
+  pagination?: IPaginationResponse
+) => {
+  const attachedResponse: any = {};
+  if (data) {
+    attachedResponse["data"] = data;
+  } else {
+    attachedResponse["data"] = {};
+  }
+  if (pagination) attachedResponse["pagination"] = pagination;
+  return res.status(statusCode).json(<IResponse>{
+    meta: {
+      statusCode,
+      message,
+      error: false,
+    },
+    ...attachedResponse,
   });
 };
 
