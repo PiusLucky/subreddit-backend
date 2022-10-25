@@ -2,7 +2,6 @@ import { ErrorWithMessage } from "../interfaces/general/express.interface.js";
 import {
   ICreateSubRedit,
   ICreateSubReditPost,
-  ISubReddit,
 } from "../interfaces/user.interface.js";
 import SubRedditComment from "../models/subreddit-comment.model.js";
 import SubRedditPost from "../models/subreddit-post.model.js";
