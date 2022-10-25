@@ -85,7 +85,7 @@ class MongooseConnection {
                 });
                 const userId = updatedSubReddit?.user?.toString();
                 await new UserService().createAuditTrail(
-                  AuditActions.Create,
+                  AuditActions.Update,
                   "updated subreddit",
                   userId
                 );
