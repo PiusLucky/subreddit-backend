@@ -1,13 +1,16 @@
 import mongoose, { Schema } from "mongoose";
 
-const SubRedditCommentSchema: Schema = new Schema({
-  body: { type: String, required: true },
-  post: {
-    type: mongoose.Types.ObjectId,
-    required: "postId is required",
-    ref: "SubReditPost",
+const SubRedditCommentSchema: Schema = new Schema(
+  {
+    body: { type: String, required: true },
+    post: {
+      type: mongoose.Types.ObjectId,
+      required: "postId is required",
+      ref: "SubReditPost",
+    },
   },
-});
+  { timestamps: true }
+);
 
 const SubRedditComment = mongoose.model(
   "SubReditComment",

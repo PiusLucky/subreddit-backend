@@ -3,6 +3,7 @@ import {
   ICreateSubRedit,
   ICreateSubReditPost,
 } from "../interfaces/user.interface.js";
+import AuditTrail from "../models/audit-trail.model.js";
 import SubRedditComment from "../models/subreddit-comment.model.js";
 import SubRedditPost from "../models/subreddit-post.model.js";
 import SubReddit from "../models/subreddit.model.js";
@@ -103,6 +104,22 @@ export default class UserService {
         },
       });
       return populatedSubReditComment;
+    } catch (err) {
+      throw new UserError((err as ErrorWithMessage)?.message);
+    }
+  }
+
+  async createAuditTrail(
+    action: string,
+    target: string,
+    user: string
+  ): Promise<any> {
+    try {
+      await AuditTrail.create({
+        action,
+        target,
+        user,
+      });
     } catch (err) {
       throw new UserError((err as ErrorWithMessage)?.message);
     }

@@ -8,3 +8,8 @@ export enum CommunityTypes {
   Restricted = "restricted",
   Private = "private",
 }
+
+export enum AuditActions {
+  Create = "CREATE",
+  Update = "UPDATE",
+}

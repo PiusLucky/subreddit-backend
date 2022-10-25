@@ -6,7 +6,7 @@ import MongooseConnection from "../config/db.js";
 import User from "../models/user.model.js";
 import { UserError } from "../utils/response/errors.js";
 import { UserRoles } from "../constant/enums/user/index.js";
-import DiscardedToken from "../models/discarded-token-model.js";
+import DiscardedToken from "../models/discarded-token.model.js";
 
 export default class AuthService {
   async createUser(input: IRegister): Promise<any> {

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { NextFunction, Response } from "express";
 import env from "../../env.config.js";
-import DiscardedToken from "../models/discarded-token-model.js";
+import DiscardedToken from "../models/discarded-token.model.js";
 import { errorResponse } from "../utils/response/index.js";
 
 class CheckAuth {
