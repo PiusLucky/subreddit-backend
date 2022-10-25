@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import winston from "winston";
 import envConfig from "../../env.config.js";
 import { AuditActions } from "../constant/enums/user/index.js";
-import AuditTrail from "../models/audit-trail.model.js";
 import SubReddit from "../models/subreddit.model.js";
 import UserService from "../services/user-service.js";
 import { isTestingEnvironment } from "../utils/environment.js";
