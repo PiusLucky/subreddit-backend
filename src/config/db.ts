@@ -71,6 +71,7 @@ class MongooseConnection {
                   "created subreddit",
                   change.fullDocument.user
                 );
+                this._logger.info("created subreddit");
             }
           }
 
@@ -87,6 +88,7 @@ class MongooseConnection {
                   "updated subreddit",
                   userId
                 );
+                this._logger.info("updated subreddit");
             }
           }
         });
@@ -101,6 +103,7 @@ class MongooseConnection {
                   "created subreddit post",
                   change.fullDocument.user
                 );
+                this._logger.info("created subreddit post");
             }
           }
         });
@@ -115,6 +118,7 @@ class MongooseConnection {
                   "created comment in subredit post",
                   change.fullDocument.user
                 );
+                this._logger.info("created subreddit comment");
             }
           }
         });
