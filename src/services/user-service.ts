@@ -1,5 +1,11 @@
 import { ErrorWithMessage } from "../interfaces/general/express.interface.js";
-import { ICreateSubRedit, ISubReddit } from "../interfaces/user.interface.js";
+import {
+  ICreateSubRedit,
+  ICreateSubReditPost,
+  ISubReddit,
+} from "../interfaces/user.interface.js";
+import SubRedditComment from "../models/subreddit-comment.model.js";
+import SubRedditPost from "../models/subreddit-post.model.js";
 import SubReddit from "../models/subreddit.model.js";
 import { UserError } from "../utils/response/errors.js";
 
@@ -30,28 +36,75 @@ export default class UserService {
   }
 
   async updateCommunity(
-    userId: string,
     subredditId: string,
     input: ICreateSubRedit
   ): Promise<any> {
     try {
-      const redditNameAlreadyExist = await SubReddit.findOne({
-        name: input.name,
+      await SubReddit.findOneAndUpdate(
+        { _id: subredditId },
+        {
+          $set: input,
+        },
+        { upsert: true }
+      );
+
+      const updatedSubReddit = await SubReddit.findOne({
+        id: subredditId,
       });
-
-      console.log(redditNameAlreadyExist);
-
-      if (redditNameAlreadyExist) {
-        throw new UserError("Subreddit name already exist, use a unique name");
-      }
-      const reddit = await SubReddit.create({
-        ...input,
-        userId,
-      });
-
-      return reddit;
+      return updatedSubReddit;
     } catch (err) {
-      console.log(err);
+      throw new UserError((err as ErrorWithMessage)?.message);
+    }
+  }
+
+  async createPostInCommunity(
+    subredditId: string,
+    input: ICreateSubReditPost
+  ): Promise<any> {
+    try {
+      const post = await SubRedditPost.create({
+        ...input,
+        subreddit: subredditId,
+      });
+
+      const populatedSubReditPost = await SubRedditPost.findById(
+        post?.id
+      ).populate({
+        path: "subreddit",
+      });
+      return populatedSubReditPost;
+    } catch (err) {
+      throw new UserError((err as ErrorWithMessage)?.message);
+    }
+  }
+
+  async createPostComment(
+    postId: string,
+    input: ICreateSubReditPost
+  ): Promise<any> {
+    try {
+      const post = await SubRedditPost.findById(postId);
+
+      if (!post) {
+        throw new UserError("Invalid postId");
+      }
+
+      const comment = await SubRedditComment.create({
+        ...input,
+        post: postId,
+      });
+
+      const populatedSubReditComment = await SubRedditComment.findById(
+        comment?.id
+      ).populate({
+        path: "post",
+        select: "subreddit",
+        populate: {
+          path: "subreddit",
+        },
+      });
+      return populatedSubReditComment;
+    } catch (err) {
       throw new UserError((err as ErrorWithMessage)?.message);
     }
   }

@@ -28,3 +28,7 @@ export interface ISubReddit {
   _id: string;
   __v: number;
 }
+
+export interface ICreateSubReditPost {
+  body: string;
+}
