@@ -26,7 +26,6 @@ export default class SubRedditPolicy {
         }
         next();
       } catch (error) {
-        console.log(error);
         return handleErrorResponse(res, error);
       }
     };

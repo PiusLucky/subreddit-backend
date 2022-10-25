@@ -2,7 +2,7 @@ import { NextFunction } from "express";
 import { Paginate } from "../interfaces/general/paginate.interface.js";
 
 class PaginateModel {
-  public invokePaginateModel = (model: any, userSpecific: boolean) => {
+  public invokePaginateModel = (model: any, userSpecific: boolean = true) => {
     return async (req: any, res: any, next: NextFunction) => {
       let page = parseInt(req.query.page);
       let size = parseInt(req.query.size);
@@ -20,9 +20,10 @@ class PaginateModel {
 
       const results: Paginate = {};
 
-      const totalDoc = userSpecific
-        ? await model.find({ userId: req.user._id }).countDocuments().exec()
-        : await model.find({}).countDocuments().exec();
+      const totalDoc = await model
+        .find({ user: req.user._id })
+        .countDocuments()
+        .exec();
 
       const totalPages = Math.ceil(totalDoc / size);
 
@@ -35,7 +36,7 @@ class PaginateModel {
 
       try {
         results.result = await model
-          .find({ userId: req.user._id })
+          .find({ user: req.user._id })
           .sort({
             createdAt: -1,
           })

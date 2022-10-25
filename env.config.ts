@@ -6,7 +6,6 @@ export default {
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN ?? "",
   MONGO_URI: process.env.MONGO_URI ?? "",
   FRONTEND_URL: process.env.FRONTEND_URL ?? "",
-  STAGING_URL: process.env.STAGING_URL ?? "",
   PORT: process.env.PORT ?? "",
   NODE_ENV: process.env.NODE_ENV ?? "",
 };

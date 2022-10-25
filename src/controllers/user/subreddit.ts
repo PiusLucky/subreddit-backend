@@ -1,9 +1,10 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import {
   handleErrorResponse,
   successResponse,
 } from "../../utils/response/index.js";
 import { userService } from "../../services/index.js";
+import { PaginatedResponse } from "../../interfaces/general/paginate.interface.js";
 
 class SubReddit {
   invokeCreateCommunity = () => {
@@ -70,6 +71,22 @@ class SubReddit {
           req.validatedBody
         );
         return successResponse(res, 201, "Comment created successfully", post);
+      } catch (error) {
+        return handleErrorResponse(res, error);
+      }
+    };
+  };
+
+  invokeViewAuditLog = () => {
+    return async (_: any, res: any) => {
+      try {
+        const audit = res.paginatedResults;
+        return successResponse(
+          res,
+          200,
+          "Audit log fetched successfully",
+          audit
+        );
       } catch (error) {
         return handleErrorResponse(res, error);
       }

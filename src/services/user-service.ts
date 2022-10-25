@@ -124,4 +124,20 @@ export default class UserService {
       throw new UserError((err as ErrorWithMessage)?.message);
     }
   }
+
+  async viewAuditLog(
+    action: string,
+    target: string,
+    user: string
+  ): Promise<any> {
+    try {
+      await AuditTrail.create({
+        action,
+        target,
+        user,
+      });
+    } catch (err) {
+      throw new UserError((err as ErrorWithMessage)?.message);
+    }
+  }
 }

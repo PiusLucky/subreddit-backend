@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import winston from "winston";
 import envConfig from "../../env.config.js";
 import { AuditActions } from "../constant/enums/user/index.js";
+import SubRedditPost from "../models/subreddit-post.model.js";
 import SubReddit from "../models/subreddit.model.js";
 import UserService from "../services/user-service.js";
 import { isTestingEnvironment } from "../utils/environment.js";
@@ -98,10 +99,15 @@ class MongooseConnection {
           if (change.operationType === "insert") {
             switch (change.operationType) {
               case "insert":
+                const documentKey = change?.documentKey?._id;
+                const updatedSubReddit = await SubReddit.findOne({
+                  id: documentKey,
+                });
+                const userId = updatedSubReddit?.user?.toString();
                 await new UserService().createAuditTrail(
                   AuditActions.Create,
                   "created subreddit post",
-                  change.fullDocument.user
+                  userId
                 );
                 this._logger.info("created subreddit post");
             }
@@ -113,10 +119,18 @@ class MongooseConnection {
           if (change.operationType === "insert") {
             switch (change.operationType) {
               case "insert":
+                const documentKey = change?.documentKey?._id;
+                const post = await SubRedditPost.findOne({
+                  id: documentKey,
+                });
+                const updatedSubReddit = await SubReddit.findOne({
+                  id: post?.subreddit?.toString(),
+                });
+                const userId = updatedSubReddit?.user?.toString();
                 await new UserService().createAuditTrail(
                   AuditActions.Create,
                   "created comment in subredit post",
-                  change.fullDocument.user
+                  userId
                 );
                 this._logger.info("created subreddit comment");
             }
