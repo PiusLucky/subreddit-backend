@@ -2,7 +2,7 @@
 A backend server for a subreddit clone.
 
 ### Installation
-Install dependencies by using:
+Install dependencies using:
 <code>yarn install</code>
 
 Run build:
